@@ -1,0 +1,4 @@
+cap-from-youtube-opts
+opencv-python
+streamlit
+yt-dlp
