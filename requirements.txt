@@ -1,4 +1,4 @@
 cap-from-youtube-opts
-opencv-python
+opencv-python-headless
 streamlit
 yt-dlp
