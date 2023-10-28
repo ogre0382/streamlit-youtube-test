@@ -1,11 +1,12 @@
 import os
 import streamlit as st
-from streamlit import session_state as state
+import sys
 from module.streamlit_youtube import (
     get_max_frame, 
     get_yt_frame, 
     save_upload_file
 )
+from streamlit import session_state as state
 
 def get_state(value):
     if value not in state:
@@ -92,4 +93,5 @@ if __name__ == '__main__':
         for key in state.keys():
             del state[key]
     st.title('SSBU 1on1 Collection APP\nfor online matches only')
+    st.write(sys.platform)
     mode_select()
