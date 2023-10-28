@@ -23,9 +23,9 @@ def save_upload_file(filename, eg_filepath=None):
         return new_fp
 
 def get_yt_info(url, browser=None, cookies_path=None):
-    ydl_opts = {}
+    ydl_opts = {'verbose' : True}
     if browser!=None and cookies_path!=None:
-        ydl_opts = {'cookiesfrombrowser' : (browser, cookies_path)}
+        ydl_opts = {'verbose' : True, 'cookiesfrombrowser' : (browser, cookies_path)}
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         return ydl.extract_info(url, download=False)
 
@@ -40,7 +40,7 @@ def get_max_frame(url, browser=None, cookies_path=None):
     return max_frame
     
 def get_yt_frame(url, browser=None, cookies_path=None):
-    ydl_opts = {'cookiesfrombrowser' : (browser, cookies_path)}
+    ydl_opts = {'verbose' : True, 'cookiesfrombrowser' : (browser, cookies_path)}
     cap = cap_from_youtube(url, 'best', ydl_opts)
     
     print(cap.get(cv2.CAP_PROP_FRAME_COUNT))
