@@ -1,6 +1,11 @@
+import os
 import streamlit as st
 from streamlit import session_state as state
-from module.streamlit_youtube import get_max_frame, get_yt_frame
+from module.streamlit_youtube import (
+    get_max_frame, 
+    get_yt_frame, 
+    save_upload_file
+)
 
 def get_state(value):
     if value not in state:
@@ -17,6 +22,7 @@ def collection_mode():
     playlistURL_type = "https://www.youtube.com/playlist?list="
     singleURL_type = "https://www.youtube.com/watch?v="
     
+    # 入力するURLがプレイリストなのかを設定
     playlist_flag = col[1].checkbox(label='playlist')
     if playlist_flag: 
         value_type=playlistURL_type
@@ -28,22 +34,33 @@ def collection_mode():
         value=value_type
     )
 
-    cookie_type = None
+    # メンバー限定動画なのかを設定
+    browser = None
     if st.checkbox(label='members-only'):
-        cookie_type = st.radio(
+        # 使用するクッキーのブラウザを選択
+        browser = st.radio(
             label='Unused browser type in your having (Unlocked cookie type)',
             options=('chrome', 'edge'),
             index=0,
             horizontal=True,
         )
+        # クッキーキーとクッキーをアップロード(一時利用)
+        if browser=='chrome': 
+            eg_key_path = 'C:\\Users\\user\\AppData\\Local\\Google\\Chrome\\User Data\\Local State'
+            eg_cookies_path = 'C:\\Users\\user\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Network\\Cookies'
+        else:
+            eg_key_path = 'C:\\Users\\user\\AppData\\Local\\Microsoft\\Edge\\User Data\\Local State'
+            eg_cookies_path = 'C:\\Users\\user\\AppData\\Local\\Microsoft\\Edge\\User Data\\Profile 1\\Network\\Cookies'
+        save_upload_file('Local State', eg_key_path)
+        cookies_path = save_upload_file('Cookies', eg_cookies_path)
+        if cookies_path!=None: cookies_dir = os.path.dirname(cookies_path)
     
     get_state('check_yt_clicked')
     if st.button('Check YouTube URL'): set_state('check_yt_clicked')
     if state.check_yt_clicked:
-
         get_state('yt_slider_changed')
         if not state.yt_slider_changed:
-            state.max_frame_list = get_max_frame(url, cookie_type)
+            state.max_frame_list = get_max_frame(url, browser, cookies_dir)
         for max_frame in state.max_frame_list:
             if st.slider('Frame position of YouTube', 0, max_frame) >= 0: set_state('yt_slider_changed')
 
